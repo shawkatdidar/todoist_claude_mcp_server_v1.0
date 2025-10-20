@@ -1,0 +1,71 @@
+name: todoist-mcp-server
+displayName: Todoist MCP Server
+description: MCP server to connect Todoist with Claude through REST API. Manage tasks, projects, sections, labels, and comments directly from Claude.
+version: 1.0.0
+author: shawkatdidar
+license: MIT
+homepage: https://github.com/shawkatdidar/todoist_claude_mcp_server_v1.0
+
+# Server configuration
+server:
+  type: python
+  command: python
+  args:
+    - server.py
+
+# Environment variables required - Smithery will prompt users for these
+environment:
+  - name: TODOIST_API_TOKEN
+    description: "Your Todoist API token. Get it from: Todoist Settings → Integrations → Developer tab → API token. Copy and paste the token here."
+    required: true
+    secret: true
+
+# Dependencies
+dependencies:
+  python:
+    - httpx>=0.27.0
+    - python-dotenv>=1.0.0
+    - mcp>=0.1.0
+    - tenacity>=8.2.0
+
+# Supported platforms
+platforms:
+  - darwin
+  - linux
+  - windows
+
+# Tags for discovery
+tags:
+  - productivity
+  - task-management
+  - todoist
+  - api
+  - integration
+
+# Tools provided by this server
+tools:
+  - name: get_tasks
+    description: Get all tasks from Todoist with optional filtering by project or label
+  - name: get_projects
+    description: Get all projects from Todoist
+  - name: get_sections
+    description: Get all sections from Todoist, optionally filtered by project
+  - name: get_labels
+    description: Get all labels from Todoist
+  - name: get_comments
+    description: Get comments for a specific task or project
+  - name: create_task
+    description: Create a new task in Todoist with optional project, section, due date, priority, and labels
+  - name: update_task
+    description: Update an existing task in Todoist
+  - name: complete_task
+    description: Mark a task as complete in Todoist
+  - name: delete_task
+    description: Delete a task from Todoist
+
+# Installation instructions
+setup:
+  instructions: |
+    1. Get your Todoist API token from https://todoist.com/prefs/integrations
+    2. Set the TODOIST_API_TOKEN environment variable
+    3. Install Python dependencies: pip install -r requirements.txt

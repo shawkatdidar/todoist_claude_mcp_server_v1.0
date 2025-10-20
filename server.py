@@ -14,10 +14,14 @@ TODOIST_API_TOKEN = os.getenv("TODOIST_API_TOKEN")
 import sys
 print("Current working directory:", os.getcwd(), file=sys.stderr, flush=True)
 print(".env exists:", os.path.exists(".env"), file=sys.stderr, flush=True)
+
+# Validate API token presence
 if TODOIST_API_TOKEN:
     print("TODOIST_API_TOKEN loaded: ****" + TODOIST_API_TOKEN[-4:], file=sys.stderr, flush=True)
 else:
-    print("TODOIST_API_TOKEN not loaded or empty.", file=sys.stderr, flush=True)
+    print("ERROR: TODOIST_API_TOKEN not found!", file=sys.stderr, flush=True)
+    print("Please set your Todoist API token as an environment variable.", file=sys.stderr, flush=True)
+    print("Get your token from: https://todoist.com/prefs/integrations", file=sys.stderr, flush=True)
 
 # Create MCP server
 server = Server("todoist-server")
@@ -221,6 +225,18 @@ async def list_tools() -> list[Tool]:
 @server.call_tool()
 async def call_tool(name: str, arguments: dict) -> list[TextContent]:
     """Handle tool calls"""
+    # Check if API token is available
+    if not TODOIST_API_TOKEN:
+        return [TextContent(
+            type="text",
+            text="❌ ERROR: TODOIST_API_TOKEN not configured.\n\n"
+                 "Please set your Todoist API token:\n"
+                 "1. Go to https://todoist.com/prefs/integrations\n"
+                 "2. Find 'Developer' section\n"
+                 "3. Copy your API token\n"
+                 "4. Configure it in your MCP settings"
+        )]
+
     headers = {"Authorization": f"Bearer {TODOIST_API_TOKEN}"}
 
     try:
